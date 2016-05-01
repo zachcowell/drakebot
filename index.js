@@ -1,5 +1,6 @@
 var Twit = require('twit')
-
+var fs = require('fs');
+var readline = require('readline');
 var T = new Twit({
   consumer_key:         'UBkJG6NZzEAHJoB1FgRowrj4b',
   consumer_secret:      '0DhjeIYu4WRIYxSQZlKUKdlD61mAKT17VZ9zZUP3VB3KSta5Ss',
@@ -8,21 +9,53 @@ var T = new Twit({
   timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
 })
 
-//
-//  tweet 'hello world!'
-//
-
-function postDrakeFact(){
-
+var drakeFacts = [];
+var config = {
+  tagsToTrack : ['#DrakeFacts',
+                 '#DrakeTheType',
+                 '#DrakeTheTypeOfNigga',
+                 '#DrakeFactBot',
+                 '#DrakeFact'],
+  //The drakefacts are organized by score; the higher the fact in the file, the
+  //better it is. This parameter limits the number of facts to rotate, for quality control
+  lineCutoff : 200
 }
 
-T.post('statuses/update', { status: 'hello world!' }, function(err, data, response) {
-  console.log(data)
-})
+/**
+ * Go through the drakefacts text file and parse them into memory
+ */
+function initializeDrakeFacts(){
+  var rd = readline.createInterface({
+      input: fs.createReadStream('drakefacts.txt'),
+      output: process.stdout,
+      terminal: false
+  });
 
-// var stream = T.stream('statuses/filter', { track: '#DrakeFacts' })
-//
-// stream.on('tweet', function (tweet) {
-//   var userName = tweet.user.screen_name;
-//   console.log(userName)
-// })
+  var count = 0;
+  rd.on('line', function(line) {
+      if (++count <= config.lineCutoff){
+        drakeFacts.push(line);
+      }
+  });
+
+  var stream = T.stream('statuses/filter', { track: config.tagsToTrack })
+
+  stream.on('tweet', function (tweet) {
+    var userName = tweet.user.screen_name;
+    postDrakeFact(userName);
+  });
+}
+
+/**
+ * Tweet a drake fact to a user
+ * @param  {string} username
+ */
+function postDrakeFact(username){
+  var drakeFact = drakeFacts[Math.floor(Math.random()*drakeFacts.length)];
+  var drakePost = '@' + username + ' ' + drakeFact;
+  T.post('statuses/update', { status: drakePost }, function(err, data, response) {
+    console.log(data)
+  });
+}
+
+initializeDrakeFacts();
