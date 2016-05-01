@@ -52,7 +52,7 @@ function initializeDrakeFacts(){
  */
 function postDrakeFact(username){
   var drakeFact = drakeFacts[Math.floor(Math.random()*drakeFacts.length)];
-  var drakePost = '@' + username + ' ' + drakeFact;
+  var drakePost = '.@' + username + ' ' + drakeFact;
   T.post('statuses/update', { status: drakePost }, function(err, data, response) {
     console.log(data)
   });
