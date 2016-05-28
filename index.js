@@ -2,11 +2,10 @@ var Twit = require('twit')
 var fs = require('fs');
 var readline = require('readline');
 var T = new Twit({
-  consumer_key:         'get_your_own',
-  consumer_secret:      'get_your_own',
-  access_token:         'get_your_own',
-  access_token_secret:  'get_your_own',
-  timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
+  consumer_key:         'UBkJG6NZzEAHJoB1FgRowrj4b',
+  consumer_secret:      '0DhjeIYu4WRIYxSQZlKUKdlD61mAKT17VZ9zZUP3VB3KSta5Ss',
+  access_token:         '726811895542517760-YrIzreQkTVZuqZclQN0w8Y2chRwnfBO',
+  access_token_secret:  'IICa3Oy8j6SJQoBLO5JbLEeUoV5hbmNK9UOlRFklzTIKE'
 })
 
 var drakeFacts = [];
